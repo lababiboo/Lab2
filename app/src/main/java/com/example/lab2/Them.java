@@ -65,14 +65,7 @@ public class Them extends AppCompatActivity {
 
 
     }
-//    public boolean validatePhone(EditText phone) {
-//        String regexStr = "^[0-9]$";
-//        String number=phone.getText().toString();
-//        if(number.toString().length() < 10 || number.toString().length() > 13 || number.matches(regexStr) == false) {
-//            return false;
-//        }
-//        return true;
-//    }
+
 
 
 }
