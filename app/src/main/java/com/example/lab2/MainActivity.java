@@ -52,20 +52,11 @@ public class MainActivity extends AppCompatActivity {
                     300);
         }
         edName = findViewById(R.id.txtName);
-//        edPhone = findViewById(R.id.edPhone);
-//        checkBox = findViewById(R.id.checkBox);
         btnThem = findViewById(R.id.btnThem);
         btnXoa = findViewById(R.id.btnXoa);
         lstContact = findViewById(R.id.lstContact);
 
         ContactList = new ArrayList<Contact>();
-
-//        File imageFile = new File("media/picker/0/com.android.providers.media.photopicker/media/1000000033");
-//        Uri imageUri = Uri.fromFile(imageFile);
-//        ContactList.add(new Contact(1, "Nguyễn Văn A", "0913023232", false, imageUri));
-
-       // ContactList.add(new Contact(1, "Nguyễn Văn A","0913023232", false,Uri.parse("content://media/picker/0/com.android.providers.media.photopicker/media/1000000033")));
-        //ContactList.add(new Contact(2, "Lê A","0913023232", false,"Image"));
         ListAdapter = new Adapter(ContactList,this);
         lstContact.setAdapter(ListAdapter);
 
@@ -74,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 edName.setText(ListAdapter.getItem(position).toString());
-
             }
         });
         btnXoa.setOnClickListener(new View.OnClickListener() {
@@ -112,37 +102,26 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,Them.class);
                 startActivityForResult(intent,100);
-
             }
         });
-
-
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        //Bundle b = data.getExtras();
-        //data = getIntent();
-        int id = data.getIntExtra("Id",0);
-        String name = data.getStringExtra("Name");
-        String phone = data.getStringExtra("Phone");
-
-        String image = data.getStringExtra("Image");
-        Log.d("123", "onActivityResult: "+image);
+        if(requestCode == 100 && resultCode ==150){
+            int id = data.getIntExtra("Id",0);
+            String name = data.getStringExtra("Name");
+            String phone = data.getStringExtra("Phone");
+            String image = data.getStringExtra("Image");
             Contact newcontact = new Contact(id, name,phone, false,image);
-            if(requestCode == 100 && resultCode ==150){
-                //truong hop them
-                ContactList.add(newcontact);
-                ListAdapter.notifyDataSetChanged();
-            }
+            //truong hop them
+            ContactList.add(newcontact);
+            ListAdapter.notifyDataSetChanged();
+        }
 
 
 
     }
-
-
     public boolean validateId(ArrayList<Contact> c, int id){
         boolean res = true;
         for(Contact x : c){

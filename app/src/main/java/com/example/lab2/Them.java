@@ -30,14 +30,12 @@ public class Them extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_them);
-
         edId = findViewById(R.id.edId);
         edPhone = findViewById(R.id.edPhone);
         edName = findViewById(R.id.edName);
         imageView = findViewById(R.id.imageView);
         btnAdd = findViewById(R.id.btnAdd);
         btnCancel = findViewById(R.id.btnCancel);
-
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,7 +46,7 @@ public class Them extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setAction(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, 250);
             }
@@ -66,16 +64,9 @@ public class Them extends AppCompatActivity {
                 else
                 {
                     Intent intent = new Intent();
-                    //Bundle b = new Bundle();
                     intent.putExtra("Id",id);
                     intent.putExtra("Name",name);
                     intent.putExtra("Phone",phone);
-//                    b.putInt("Id", id);
-//                    b.putString("Name", name);
-//                    b.putString("Phone", phone);
-                    //b.putParcelable("Image",img_path);
-                    Log.d("TAG", "onClick: "+img_path);
-                    //intent.putExtras(b);
                     intent.putExtra("Image",img_path);
                     setResult(150, intent);
                     finish();
@@ -98,7 +89,6 @@ public class Them extends AppCompatActivity {
             if(pic_path!=null){
                 imageView.setImageURI(img);
             }
-            Log.d("456", "onActivityResult: "+img);
 
         }
     }

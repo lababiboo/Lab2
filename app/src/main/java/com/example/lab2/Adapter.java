@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
@@ -49,24 +50,23 @@ public class Adapter extends BaseAdapter {
         View v = convertView;
         if(v==null)
             v = inflater.inflate(R.layout.activity_contact,null);
-        EditText txtName = v.findViewById(R.id.edName);
+        TextView txtName = v.findViewById(R.id.edName);
         txtName.setText(data.get(position).getName());
-        EditText txtPhone = v.findViewById(R.id.edPhone);
+        TextView txtPhone = v.findViewById(R.id.edPhone);
         txtPhone.setText(data.get(position).getPhone());
         CheckBox cb = v.findViewById(R.id.checkBox);
         cb.setChecked(data.get(position).getStatus());
-        ImageView img = v.findViewById(R.id.imageView);
-
+        ImageView img = v.findViewById(R.id.imageView3);
 
         String path = data.get(position).getImage();
-//        Uri uri = Uri.parse(path);
-        Log.d("a1", "getView: "+path);
-//
-        if(path!=null && !path.isEmpty()) {
-            Glide.with(context)
-                    .load(path)
-                    .into(img);
-        }
+        //cach 1
+        img.setImageURI(Uri.parse(path));
+        //cach 2
+//        if(path!=null && !path.isEmpty()) {
+//            Glide.with(context)
+//                    .load(path)
+//                    .into(img);
+//        }
 
         Contact c = data.get(position);
         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
