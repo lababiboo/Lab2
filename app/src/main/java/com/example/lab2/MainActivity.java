@@ -3,11 +3,16 @@ package com.example.lab2;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.DataSetObserver;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,6 +24,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -36,7 +43,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //Cap quyen truy cap doc thu vien
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Yêu cầu quyền truy cập vào bộ nhớ
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                    300);
+        }
         edName = findViewById(R.id.txtName);
 //        edPhone = findViewById(R.id.edPhone);
 //        checkBox = findViewById(R.id.checkBox);
@@ -45,8 +59,13 @@ public class MainActivity extends AppCompatActivity {
         lstContact = findViewById(R.id.lstContact);
 
         ContactList = new ArrayList<Contact>();
-        ContactList.add(new Contact(1, "Nguyễn Văn A","0913023232", false,"Image"));
-        ContactList.add(new Contact(2, "Lê A","0913023232", false,"Image"));
+
+//        File imageFile = new File("media/picker/0/com.android.providers.media.photopicker/media/1000000033");
+//        Uri imageUri = Uri.fromFile(imageFile);
+//        ContactList.add(new Contact(1, "Nguyễn Văn A", "0913023232", false, imageUri));
+
+       // ContactList.add(new Contact(1, "Nguyễn Văn A","0913023232", false,Uri.parse("content://media/picker/0/com.android.providers.media.photopicker/media/1000000033")));
+        //ContactList.add(new Contact(2, "Lê A","0913023232", false,"Image"));
         ListAdapter = new Adapter(ContactList,this);
         lstContact.setAdapter(ListAdapter);
 
@@ -55,12 +74,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 edName.setText(ListAdapter.getItem(position).toString());
-                //ListAdapter.getItemId(position);
-//                for(Contact x : ContactList){
-//                    if(x.getId() == ListAdapter.getItemId(position)){
-//
-//                    }
-//                }
+
             }
         });
         btnXoa.setOnClickListener(new View.OnClickListener() {
@@ -109,11 +123,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Bundle b = data.getExtras();
-        int id = b.getInt("Id");
-        String name = b.getString("Name");
-        String phone = b.getString("Phone");
-        String image = b.getString("Image");
+        //Bundle b = data.getExtras();
+        //data = getIntent();
+        int id = data.getIntExtra("Id",0);
+        String name = data.getStringExtra("Name");
+        String phone = data.getStringExtra("Phone");
+
+        String image = data.getStringExtra("Image");
+        Log.d("123", "onActivityResult: "+image);
             Contact newcontact = new Contact(id, name,phone, false,image);
             if(requestCode == 100 && resultCode ==150){
                 //truong hop them
