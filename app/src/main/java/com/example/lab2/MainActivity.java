@@ -1,5 +1,6 @@
 package com.example.lab2;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,9 @@ import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,6 +35,7 @@ import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
+    private int SelectedItemId;
     private EditText edName;
     private EditText edPhone;
     private CheckBox checkBox;
@@ -60,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         ListAdapter = new Adapter(ContactList,this);
         lstContact.setAdapter(ListAdapter);
 
+        registerForContextMenu(lstContact);
         ArrayList<Integer> list = new ArrayList<Integer>();;
         lstContact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -104,6 +110,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent,100);
             }
         });
+        lstContact.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                SelectedItemId = position;
+                return false;
+            }
+        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -116,6 +129,16 @@ public class MainActivity extends AppCompatActivity {
             Contact newcontact = new Contact(id, name,phone, false,image);
             //truong hop them
             ContactList.add(newcontact);
+            ListAdapter.notifyDataSetChanged();
+        }
+        else if(requestCode == 200 && resultCode == 150){
+            int id = data.getIntExtra("Id",0);
+            String name = data.getStringExtra("Name");
+            String phone = data.getStringExtra("Phone");
+            String image = data.getStringExtra("Image");
+            Contact newcontact = new Contact(id, name,phone, false,image);
+            //truong hop sua
+            ContactList.set(SelectedItemId, newcontact);
             ListAdapter.notifyDataSetChanged();
         }
 
@@ -133,4 +156,26 @@ public class MainActivity extends AppCompatActivity {
         return res;
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater mmnuInflater = new MenuInflater(this);
+        mmnuInflater.inflate(R.menu.contextmenu,menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        Contact c = ContactList.get(SelectedItemId);
+        if(item.getItemId()==R.id.mnuEdit){
+            Intent i = new Intent(MainActivity.this,Them.class);
+            Bundle b = new Bundle();
+            b.putInt("Id", c.getId());
+            b.putString("Name", c.getName());
+            b.putString("Phone", c.getPhone());
+            b.putString("Image", c.getImage());
+            i.putExtras(b);
+            startActivityForResult(i,200);
+        }
+        return super.onContextItemSelected(item);
+    }
 }
