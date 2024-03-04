@@ -36,6 +36,16 @@ public class Them extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         btnAdd = findViewById(R.id.btnAdd);
         btnCancel = findViewById(R.id.btnCancel);
+
+        Intent i = getIntent();
+        Bundle b = i.getExtras();
+        if(b!=null){
+            edId.setText(b.getInt("Id_edit"));
+            edName.setText(b.getString("Name_edit"));
+            edPhone.setText(b.getString("Phone_edit"));
+            imageView.setImageURI(Uri.parse(b.getString("Image_edit")));
+            btnAdd.setText("Edit");
+        }
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
